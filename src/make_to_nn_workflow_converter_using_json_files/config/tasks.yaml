@@ -1,0 +1,47 @@
+---
+extract_workflow_structure:
+  description: Extract and parse modules and connections from the Make.com workflow
+    JSON file provided as {make_json_input} using FileReadTool and JSONSearchTool.
+  expected_output: A structured JSON object containing the extracted modules and connections
+    from the Make.com workflow.
+  async_execution: false
+  agent: Parser
+map_modules_to_nodes:
+  description: Using the output from extract_workflow_structure, apply the module-to-node
+    mapping defined in {mapping_config} using FileReadTool and JSONSearchTool to convert Make.com modules into equivalent
+    n8n nodes. If the module is not found in the mapping_config, use the WebsiteSearchTool to search the web for the module into equivalent
+    n8n nodes.
+  expected_output: A list of mapped nodes representing the n8n workflow elements derived
+    from the Make.com modules.
+  async_execution: false
+  agent: Mapping_Expert
+  context:
+  - extract_workflow_structure
+assemble_n8n_workflow:
+  description: Combine the mapped nodes from map_modules_to_nodes with the translated
+    connections to assemble a complete n8n workflow JSON that includes nodes, connections,
+    an active flag, and settings.
+  expected_output: A fully assembled n8n workflow JSON object ready for validation.
+  async_execution: false
+  agent: Mapping_Expert
+  context:
+  - map_modules_to_nodes
+validate_n8n_workflow:
+  description: Validate the assembled n8n workflow JSON from assemble_n8n_workflow
+    against the provided validation rules {validation_rules} to ensure compliance
+    with the n8n schema.
+  expected_output: A validated n8n workflow JSON that adheres to the specified validation
+    rules with any discrepancies addressed.
+  async_execution: false
+  agent: Validator
+  context:
+  - assemble_n8n_workflow
+generate_workflow_file:
+  description: Generate a single, well-formatted workflow.json file from the validated
+    n8n workflow JSON obtained from validate_n8n_workflow, ensuring it is ready for
+    import into n8n.
+  expected_output: A finalized workflow.json file containing the converted n8n workflow.
+  async_execution: false
+  agent: Generator
+  context:
+  - validate_n8n_workflow
