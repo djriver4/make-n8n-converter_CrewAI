@@ -5,6 +5,7 @@ Tool for validating JSON against validation rules.
 from crewai.tools import BaseTool
 import json
 import re
+from typing import Optional, Dict, List, Any, ClassVar, Union
 
 class JsonValidatorTool(BaseTool):
     """
@@ -15,8 +16,8 @@ class JsonValidatorTool(BaseTool):
     containing the rules for validating the JSON structure.
     """
     
-    name = "JSON Validator"
-    description = "Validates JSON against validation rules"
+    name: ClassVar[str] = "JSON Validator"
+    description: ClassVar[str] = "Validates JSON against validation rules"
     
     def __init__(self, validation_rules=None, result_as_answer=True):
         """
@@ -28,6 +29,19 @@ class JsonValidatorTool(BaseTool):
         """
         self.validation_rules = validation_rules
         super().__init__(result_as_answer=result_as_answer)
+    
+    def _run(self, json_input: Union[str, Dict]) -> Dict:
+        """
+        Run the validation on the provided JSON input.
+        This is the required method for BaseTool.
+        
+        Args:
+            json_input: The JSON to validate, either as a string or dict
+            
+        Returns:
+            Dict: A dictionary containing validation results
+        """
+        return self._execute(json_input)
     
     def _execute(self, json_input):
         """
