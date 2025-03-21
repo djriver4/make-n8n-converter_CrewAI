@@ -1,0 +1,62 @@
+{
+  "nodes": [
+    {
+      "id": "1",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "new-lead-webhook",
+        "responseMode": "onReceived"
+      },
+      "position": [0, 0],
+      "disabled": false
+    },
+    {
+      "id": "2",
+      "name": "Google Sheets - Add Row",
+      "type": "n8n-nodes-base.googleSheets.addRow",
+      "typeVersion": 1,
+      "parameters": {
+        "spreadsheetId": "your_spreadsheet_id",
+        "range": "Sheet1",
+        "valueInputMode": "USER_ENTERED",
+        "values": {
+          "string": [
+            "Lead Name",
+            "Lead Email",
+            "Lead Phone"
+          ]
+        }
+      },
+      "position": [300, 0],
+      "disabled": false
+    }
+  ],
+  "connections": {
+    "1": {
+      "main": [
+        [
+          {
+            "node": "2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "saveExecutionProgress": true,
+    "saveManualExecutions": true,
+    "timezone": "UTC"
+  },
+  "id": "workflow_id",
+  "name": "Sync Facebook Leads with Google Sheets",
+  "versionId": 1,
+  "createdAt": "2023-10-01T00:00:00Z",
+  "updatedAt": "2023-10-01T00:00:00Z"
+}

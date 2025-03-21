@@ -38,8 +38,10 @@ validate_n8n_workflow:
 generate_workflow_file:
   description: Generate a single, well-formatted workflow.json file from the validated
     n8n workflow JSON obtained from validate_n8n_workflow, ensuring it is ready for
-    import into n8n.
+    import into n8n. For the workflow.json file, ensure that the nodes are formatted
+    correctly and that the connections are valid. When putting the output_file of workflow.json file make sure to remove the ```json and ``` tags or any other items that are not part of the workflow.json file keeping with JSON format.
   expected_output: A finalized workflow.json file containing the converted n8n workflow.
+  output_file: 'output/workflow.json'
   async_execution: false
   agent: Generator
   context:

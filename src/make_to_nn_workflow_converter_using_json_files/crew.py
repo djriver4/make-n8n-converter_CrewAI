@@ -3,6 +3,9 @@ from crewai.project import CrewBase, agent, crew, task
 from crewai_tools import FileReadTool
 from crewai_tools import JSONSearchTool
 from crewai_tools import WebsiteSearchTool
+from crewai import LLM
+
+manager_llm = LLM(model="gpt-4o")
 
 @CrewBase
 class MakeToNnWorkflowConverterUsingJsonFilesCrew():
@@ -94,7 +97,9 @@ class MakeToNnWorkflowConverterUsingJsonFilesCrew():
         return Crew(
             agents=self.agents, # Automatically created by the @agent decorator
             tasks=self.tasks, # Automatically created by the @task decorator
-            process=Process.sequential, # Process the tasks in sequence
+            #process=Process.sequential, # Process the tasks in sequence
+            process=Process.hierarchical,
+            manager_llm=manager_llm,
             verbose=True, # Enable verbose output for the crew
             memory=True, # Enable memory for the crew
         )
