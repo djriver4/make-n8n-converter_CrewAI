@@ -49,21 +49,18 @@ class MakeToNnWorkflowConverterUsingJsonFilesCrew():
         return Task(
             config=self.tasks_config['map_modules_to_nodes'],
             # Customize WebsiteSearchTool with appropriate chunk parameters
-            # min_chunk_size should be greater than chunk_overlap
+            # The min_chunk_size should be greater than chunk_overlap
             tools=[
                 WebsiteSearchTool(
                     config=dict(
-                        # Set text splitting parameters to fix chunking warning
-                        # Using standard values: 
-                        # - chunk_size=1000 (characters)
-                        # - chunk_overlap=200 (characters)
-                        # This ensures chunk_overlap < min_chunk_size
-                        text_splitter=dict(
+                        # Using the chunker configuration based on EmbedChain docs
+                        chunker=dict(
                             chunk_size=1000,
-                            chunk_overlap=200,
+                            chunk_overlap=100,
+                            min_chunk_size=150  # Ensure min_chunk_size > chunk_overlap
                         )
                     )
-                ), 
+                ),
                 JSONSearchTool(), 
                 FileReadTool()
             ],
