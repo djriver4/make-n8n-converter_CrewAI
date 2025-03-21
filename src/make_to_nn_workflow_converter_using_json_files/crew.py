@@ -25,10 +25,10 @@ class MakeToNnWorkflowConverterUsingJsonFilesCrew():
 
     @agent
     def Validator(self) -> Agent:
-        validation_rules = self.inputs.get('validation_rules', None)
+        # Can't access self.inputs here, will pass validation_rules through the task
         return Agent(
             config=self.agents_config['Validator'],
-            tools=[JsonValidatorTool(validation_rules=validation_rules, result_as_answer=True)],
+            tools=[JsonValidatorTool(result_as_answer=True)],
         )
 
     @agent
@@ -69,18 +69,20 @@ class MakeToNnWorkflowConverterUsingJsonFilesCrew():
         )
 
     @task
+    def validate_n8n_workflow(self) -> Task:
+        # Here we can access self.inputs when the task is created
+        validation_rules = self.inputs.get('validation_rules', None) if hasattr(self, 'inputs') else None
+        return Task(
+            config=self.tasks_config['validate_n8n_workflow'],
+            tools=[JsonValidatorTool(validation_rules=validation_rules, result_as_answer=True)],
+            input_args={'validation_rules': validation_rules}
+        )
+
+    @task
     def assemble_n8n_workflow(self) -> Task:
         return Task(
             config=self.tasks_config['assemble_n8n_workflow'],
             tools=[],
-        )
-
-    @task
-    def validate_n8n_workflow(self) -> Task:
-        validation_rules = self.inputs.get('validation_rules', None)
-        return Task(
-            config=self.tasks_config['validate_n8n_workflow'],
-            tools=[JsonValidatorTool(validation_rules=validation_rules, result_as_answer=True)],
         )
 
     @task
