@@ -27,11 +27,10 @@ assemble_n8n_workflow:
   context:
   - map_modules_to_nodes
 validate_n8n_workflow:
-  description: Validate the assembled n8n workflow JSON from assemble_n8n_workflow
-    against the provided validation rules {validation_rules} to ensure compliance
-    with the n8n schema.
-  expected_output: A validated n8n workflow JSON that adheres to the specified validation
-    rules with any discrepancies addressed.
+  description: Review the assembled n8n workflow JSON from assemble_n8n_workflow using FileReadTool and JSONSearchTool
+    to ensure it follows n8n's schema requirements. Check that all nodes have required fields, connections are properly formed,
+    and the overall structure is valid for import into n8n.
+  expected_output: A validated n8n workflow JSON with any necessary corrections made to ensure compatibility with n8n.
   async_execution: false
   agent: Validator
   context:

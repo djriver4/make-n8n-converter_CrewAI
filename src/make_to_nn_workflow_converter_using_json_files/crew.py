@@ -3,7 +3,6 @@ from crewai.project import CrewBase, agent, crew, task
 from crewai_tools import FileReadTool
 from crewai_tools import JSONSearchTool
 from crewai_tools import WebsiteSearchTool
-from .tools.json_validator_tool import JsonValidatorTool
 
 @CrewBase
 class MakeToNnWorkflowConverterUsingJsonFilesCrew():
@@ -25,10 +24,9 @@ class MakeToNnWorkflowConverterUsingJsonFilesCrew():
 
     @agent
     def Validator(self) -> Agent:
-        validation_rules = self.inputs.get('validation_rules', None)
         return Agent(
             config=self.agents_config['Validator'],
-            tools=[JsonValidatorTool(validation_rules=validation_rules, result_as_answer=True)],
+            tools=[FileReadTool(), JSONSearchTool()],
         )
 
     @agent
@@ -77,10 +75,9 @@ class MakeToNnWorkflowConverterUsingJsonFilesCrew():
 
     @task
     def validate_n8n_workflow(self) -> Task:
-        validation_rules = self.inputs.get('validation_rules', None)
         return Task(
             config=self.tasks_config['validate_n8n_workflow'],
-            tools=[JsonValidatorTool(validation_rules=validation_rules, result_as_answer=True)],
+            tools=[FileReadTool(), JSONSearchTool()],
         )
 
     @task
