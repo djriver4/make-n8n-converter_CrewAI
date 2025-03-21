@@ -1,0 +1,9 @@
+{
+    "webhook": "Webhook Trigger",
+    "filter": "IF",
+    "transformer": "Set",
+    "action": "Function",
+    "internal": "n8n-nodes-base.noOp",
+    "salesforce": "n8n-nodes-base.salesforce",
+    "mailchimp": "n8n-nodes-base.mailchimp"
+} 

@@ -18,15 +18,40 @@ input_json = {
 }
 
 # =========== MAPPING CONFIG =========== #
-mapping_config = {
-    "webhook": "Webhook Trigger",
-    "filter": "IF",
-    "transformer": "Set",
-    "action": "Function",
-    "internal": "n8n-nodes-base.noOp",
-    "salesforce": "n8n-nodes-base.salesforce",
-    "mailchimp": "n8n-nodes-base.mailchimp"
-}
+# Load the mapping config from the JSON file
+def get_mapping_config():
+    # Calculate the path to the knowledge directory
+    project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    mapping_file = os.path.join(project_root, "knowledge", "mapping_config.json")
+    
+    try:
+        with open(mapping_file, 'r') as file:
+            mapping_config = json.load(file)
+        return mapping_config
+    except FileNotFoundError:
+        print(f"Warning: Mapping config file not found at {mapping_file}. Using default mapping.")
+        # Return the default mapping as a fallback
+        return {
+            "webhook": "Webhook Trigger",
+            "filter": "IF",
+            "transformer": "Set",
+            "action": "Function",
+            "internal": "n8n-nodes-base.noOp",
+            "salesforce": "n8n-nodes-base.salesforce",
+            "mailchimp": "n8n-nodes-base.mailchimp"
+        }
+    except json.JSONDecodeError:
+        print(f"Warning: Invalid JSON in mapping config file at {mapping_file}. Using default mapping.")
+        # Return the default mapping as a fallback
+        return {
+            "webhook": "Webhook Trigger",
+            "filter": "IF",
+            "transformer": "Set",
+            "action": "Function",
+            "internal": "n8n-nodes-base.noOp",
+            "salesforce": "n8n-nodes-base.salesforce",
+            "mailchimp": "n8n-nodes-base.mailchimp"
+        }
 
 # =========== VALIDATION RULES =========== #
 # Read the validation rules from the knowledge markdown file
@@ -52,7 +77,7 @@ def run():
     """
     inputs = {
         'make_json_input': input_json,
-        'mapping_config': mapping_config,
+        'mapping_config': get_mapping_config(),
         'validation_rules': get_validation_rules()
     }
     MakeToNnWorkflowConverterUsingJsonFilesCrew().crew().kickoff(inputs=inputs)
@@ -64,7 +89,7 @@ def train():
     """
     inputs = {
         'make_json_input': input_json,
-        'mapping_config': mapping_config,
+        'mapping_config': get_mapping_config(),
         'validation_rules': get_validation_rules()
     }
     try:
@@ -91,7 +116,7 @@ def test():
     """
     inputs = {
         'make_json_input': input_json,
-        'mapping_config': mapping_config,
+        'mapping_config': get_mapping_config(),
         'validation_rules': get_validation_rules()
     }
     try:
