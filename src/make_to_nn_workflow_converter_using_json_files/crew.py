@@ -48,7 +48,25 @@ class MakeToNnWorkflowConverterUsingJsonFilesCrew():
     def map_modules_to_nodes(self) -> Task:
         return Task(
             config=self.tasks_config['map_modules_to_nodes'],
-            tools=[WebsiteSearchTool(), JSONSearchTool(), FileReadTool()],
+            # Customize WebsiteSearchTool with appropriate chunk parameters
+            # min_chunk_size should be greater than chunk_overlap
+            tools=[
+                WebsiteSearchTool(
+                    config=dict(
+                        # Set text splitting parameters to fix chunking warning
+                        # Using standard values: 
+                        # - chunk_size=1000 (characters)
+                        # - chunk_overlap=200 (characters)
+                        # This ensures chunk_overlap < min_chunk_size
+                        text_splitter=dict(
+                            chunk_size=1000,
+                            chunk_overlap=200,
+                        )
+                    )
+                ), 
+                JSONSearchTool(), 
+                FileReadTool()
+            ],
         )
 
     @task
