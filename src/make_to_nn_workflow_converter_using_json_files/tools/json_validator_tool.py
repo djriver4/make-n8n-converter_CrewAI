@@ -18,6 +18,7 @@ class JsonValidatorTool(BaseTool):
     
     name: ClassVar[str] = "JSON Validator"
     description: ClassVar[str] = "Validates JSON against validation rules"
+    validation_rules: Optional[str] = None
     
     def __init__(self, validation_rules=None, result_as_answer=True):
         """
@@ -27,8 +28,10 @@ class JsonValidatorTool(BaseTool):
             validation_rules (str): Markdown string containing validation rules
             result_as_answer (bool): Whether to return the tool output directly as the task result
         """
-        self.validation_rules = validation_rules
         super().__init__(result_as_answer=result_as_answer)
+        # Set validation rules after init
+        if validation_rules:
+            object.__setattr__(self, 'validation_rules', validation_rules)
     
     def _run(self, json_input: Union[str, Dict]) -> Dict:
         """
