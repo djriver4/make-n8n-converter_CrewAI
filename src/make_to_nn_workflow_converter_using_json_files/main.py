@@ -9,13 +9,35 @@ import json
 # interpolate any tasks and agents information
 
 # =========== INPUT DATA =========== #
-input_json = {
-    "name": "Test Workflow",
-    "flow": [
-        {"type": "http", "id": "1", "name": "HTTP Request"},
-        {"type": "email", "id": "2", "name": "Send Email"}
-    ]
-}
+def get_input_data():
+    # Calculate the path to the knowledge directory
+    project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    input_file = os.path.join(project_root, "knowledge", "test_workflow_input.json")
+    
+    try:
+        with open(input_file, 'r') as file:
+            input_data = json.load(file)
+        return input_data
+    except FileNotFoundError:
+        print(f"Warning: Input data file not found at {input_file}. Using default input.")
+        # Return the default input as a fallback
+        return {
+            "name": "Test Workflow",
+            "flow": [
+                {"type": "http", "id": "1", "name": "HTTP Request"},
+                {"type": "email", "id": "2", "name": "Send Email"}
+            ]
+        }
+    except json.JSONDecodeError:
+        print(f"Warning: Invalid JSON in input file at {input_file}. Using default input.")
+        # Return the default input as a fallback
+        return {
+            "name": "Test Workflow",
+            "flow": [
+                {"type": "http", "id": "1", "name": "HTTP Request"},
+                {"type": "email", "id": "2", "name": "Send Email"}
+            ]
+        }
 
 # =========== MAPPING CONFIG =========== #
 # Load the mapping config from the JSON file
@@ -76,7 +98,7 @@ def run():
     Run the crew.
     """
     inputs = {
-        'make_json_input': input_json,
+        'make_json_input': get_input_data(),
         'mapping_config': get_mapping_config(),
         'validation_rules': get_validation_rules()
     }
@@ -88,7 +110,7 @@ def train():
     Train the crew for a given number of iterations.
     """
     inputs = {
-        'make_json_input': input_json,
+        'make_json_input': get_input_data(),
         'mapping_config': get_mapping_config(),
         'validation_rules': get_validation_rules()
     }
@@ -115,7 +137,7 @@ def test():
     Test the crew execution and returns the results.
     """
     inputs = {
-        'make_json_input': input_json,
+        'make_json_input': get_input_data(),
         'mapping_config': get_mapping_config(),
         'validation_rules': get_validation_rules()
     }

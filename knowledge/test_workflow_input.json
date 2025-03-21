@@ -1,0 +1,7 @@
+{
+    "name": "Test Workflow",
+    "flow": [
+        {"type": "http", "id": "1", "name": "HTTP Request"},
+        {"type": "email", "id": "2", "name": "Send Email"}
+    ]
+} 
